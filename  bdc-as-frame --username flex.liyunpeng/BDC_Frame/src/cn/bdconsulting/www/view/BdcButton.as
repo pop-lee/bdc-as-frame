@@ -18,15 +18,14 @@ package cn.bdconsulting.www.view
 		
 		private function init() : void
 		{
-			_btnLabel = new BdcLabel();
-			label = "button";
-			addChild(_btnLabel);
+//			_btnLabel = new BdcLabel();
+//			label = "button";
+//			addChild(_btnLabel);
 		}
 		
 		public function set label(_text : String) : void
 		{
-			_btnLabel.text = _text;
-			
+//			_btnLabel.text = _text;
 		}
 		
 	}
