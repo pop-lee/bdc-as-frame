@@ -4,6 +4,7 @@ package cn.bdconsulting.www.view
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Loader;
+	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.errors.IOError;
 	import flash.errors.IllegalOperationError;
@@ -14,19 +15,15 @@ package cn.bdconsulting.www.view
 	import flash.events.ProgressEvent;
 	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
+	import flash.system.System;
 	import flash.text.TextField;
 	import flash.utils.describeType;
-	import flash.utils.getQualifiedClassName;
-	
-	import flashx.textLayout.events.ModelChange;
 	
 	/**
 	 * @author LiYunpeng
 	 */	
 	public class BdcSprite extends Sprite
 	{
-		private var rect : Rectangle = new Rectangle();
-		
 		private var _scaleX : Number = 1;
 		
 		private var _scaleY : Number = 1;
@@ -48,13 +45,15 @@ package cn.bdconsulting.www.view
 		
 		private var _backgroundColor : uint = 0xffffff;
 		
-		private var _backgroundImageLoader : Loader = new Loader();
+//		private var _backgroundImageLoader : Loader = new Loader();
 		
-		private var _backgroundImage : Bitmap;
+		private var _backgroundImageResource : Class;
 		
 		private var _useBackGroundImage : Boolean = false;
 		
 		private var _backgroundAlpha : Number = 1;
+		
+//		private var _backgroundMovieClip : MovieClip = new MovieClip();
 		
 		public function BdcSprite()
 		{
@@ -64,7 +63,8 @@ package cn.bdconsulting.www.view
 		
 		private function init() : void
 		{
-			_backgroundImageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,loadBackgroundImage);
+//			_backgroundImageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,loadBackgroundImage);
+//			super.addChild(_backgroundMovieClip);
 		}
 		
 		public function set parentWidth(value : Number) : void
@@ -129,17 +129,24 @@ package cn.bdconsulting.www.view
 		
 		public function set backgroundImage(value : *) : void
 		{
-			if(value is String) {
-				_backgroundImageLoader.load(new URLRequest(value));
-			} else if(value is Bitmap) {
+//			if(value is String) {
+//				_backgroundImageLoader.load(new URLRequest(value));
+//			} else if(value is Bitmap) {
+//				backgroundBitmap(value);
+//			}
+//			else if(value is MovieClip) {
+//				_backgroundMovieClip = value;
+//				(value as MovieClip).
+//			}
+			if(value is Class) {
 				backgroundBitmap(value);
 			}
 		}
 		
-		public function get backgroundImage() : Bitmap
-		{
-			return _backgroundImage;
-		}
+//		public function get backgroundImage() : Bitmap
+//		{
+//			return _backgroundImage;
+//		}
 		
 		override public function get width() : Number
 		{
@@ -192,7 +199,7 @@ package cn.bdconsulting.www.view
 			this.scaleY = _scaleY;
 			
 			if(_useBackGroundImage)
-				drawBackgroundImage(_backgroundImage.bitmapData);
+				drawBackgroundImage(getImage().bitmapData);
 			else
 				drawBackground(unscaledWidth,unscaledHeight);
 		}
@@ -206,25 +213,45 @@ package cn.bdconsulting.www.view
 			this.graphics.endFill();
 		}
 		
-		public function drawBackgroundImage(bitmap : BitmapData) : void
+		public function drawBackgroundImage(bitmapData : BitmapData) : void
 		{
 			this.graphics.clear();
-			this.graphics.beginBitmapFill(bitmap);
-			this.graphics.drawRect(0,0,bitmap.width,bitmap.height);
+			this.graphics.beginBitmapFill(bitmapData);
+			this.graphics.drawRect(0,0,bitmapData.width,bitmapData.height);
 			this.graphics.endFill();
+			
+			System.gc();
+//			bitmapData.dispose();
 		}
 		
-		private function loadBackgroundImage(event : Event) : void
-		{
-			backgroundBitmap(_backgroundImageLoader.content as Bitmap);
-		}
+//		private function loadBackgroundImage(event : Event) : void
+//		{
+//			backgroundBitmap(_backgroundImageLoader.content as Bitmap);
+//		}
 		
-		private function backgroundBitmap(bitmap : Bitmap) : void
+		private function backgroundBitmap(bitmap : Class) : void
 		{
-			_backgroundImage = bitmap
+			_backgroundImageResource = bitmap;
 			_useBackGroundImage = true;
 			updateDisplayList(_width,_height);
 		}
 		
+		private function getImage() : Bitmap
+		{
+			var cls : * = new _backgroundImageResource();
+			var bitmap : Bitmap = new Bitmap();
+			if(cls is Bitmap) {
+				bitmap = cls;
+			} else if(cls is MovieClip) {
+//				var bitmapData : BitmapData = new BitmapData(cls.width,330,true,0x0) ;
+//				bitmapData.draw(cls,new Matrix(),null,null,new Rectangle(0,0,cls.width,cls.height));
+//				bitmap = new Bitmap(bitmapData);
+				trace((cls as MovieClip).getChildAt(0));
+				bitmap = (cls as MovieClip).getChildAt(0) as Bitmap;
+			} else if(cls is BitmapData) {
+				bitmap = new Bitmap(cls);
+			}
+			return bitmap;
+		}
 	}
 }

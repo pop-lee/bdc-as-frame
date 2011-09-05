@@ -12,6 +12,7 @@ package cn.bdconsulting.www.view
 		public function BdcApplication()
 		{
 			this.addEventListener(Event.ADDED_TO_STAGE,addToStageHandle);
+//			super();
 		}
 		
 		protected function init() : void

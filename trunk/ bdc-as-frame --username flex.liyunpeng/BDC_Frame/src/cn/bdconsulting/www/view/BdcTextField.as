@@ -69,6 +69,10 @@ package cn.bdconsulting.www.view
 			}
 			updateFormat();
 		}
+		public function get text() : String
+		{
+			return _textField.text;
+		}
 		
 		public function set bold(value : Boolean) : void
 		{
