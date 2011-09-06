@@ -45,8 +45,6 @@ package cn.bdconsulting.www.view
 		
 		private var _backgroundColor : uint = 0xffffff;
 		
-//		private var _backgroundImageLoader : Loader = new Loader();
-		
 		private var _backgroundImageResource : Class;
 		
 		private var _useBackGroundImage : Boolean = false;
@@ -243,10 +241,6 @@ package cn.bdconsulting.www.view
 			if(cls is Bitmap) {
 				bitmap = cls;
 			} else if(cls is MovieClip) {
-//				var bitmapData : BitmapData = new BitmapData(cls.width,330,true,0x0) ;
-//				bitmapData.draw(cls,new Matrix(),null,null,new Rectangle(0,0,cls.width,cls.height));
-//				bitmap = new Bitmap(bitmapData);
-				trace((cls as MovieClip).getChildAt(0));
 				bitmap = (cls as MovieClip).getChildAt(0) as Bitmap;
 			} else if(cls is BitmapData) {
 				bitmap = new Bitmap(cls);
