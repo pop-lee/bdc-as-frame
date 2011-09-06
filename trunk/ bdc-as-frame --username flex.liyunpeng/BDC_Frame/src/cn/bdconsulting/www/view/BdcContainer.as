@@ -78,12 +78,17 @@ package cn.bdconsulting.www.view
 		override public function addChildAt(child:DisplayObject, index:int):DisplayObject
 		{
 			_children.push(child);
-			return _contentPane.addChildAt(child,index);
+			try{
+				return _contentPane.addChildAt(child,index);
+			}catch (error : Error) {
+				throw new Error(index + "    /" + _contentPane.numChildren);
+			}
+			return null;
 		}
 		
 		override public function removeChild(child:DisplayObject):DisplayObject
 		{
-			return _contentPane.removeChildAt(_children.indexOf(child));
+			return removeChildAt(_children.indexOf(child));
 		}
 		
 		override public function getChildAt(index:int):DisplayObject
